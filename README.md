@@ -2,7 +2,7 @@
 
 It is a small Python implementation of back-propagation in a fully connected neural network. The implementation of `autograd` is based on the following observations and illustrations:
 
-- #### Calculation of gradient automatically by using back propagation
+- ### Calculation of gradient automatically by using back propagation
 The gradient of loss function with respect to the weights of last layers are calculated and back propagated through the intermediate and first layers using chain rule. Given the following simple relations (1):
 
 $y=w_1x_1+b_1$
@@ -46,7 +46,7 @@ L(+) -->R[dz/dz=1]
 ```
 
 
-- #### Multi layer perceptron (MLP)
+- ### Multi layer perceptron (MLP)
 
 A perceptron is a mathematical expression that squashes the weighted sum of inputs to the range [-1, 1], which has $n$ inputs but only one output.
 
@@ -74,14 +74,17 @@ graph LR;
     Pm --> O
 ```
 
-A multi layer perceptron consists of several layers, which are fully connected:
+A multi layer perceptron (MLP) consists of several layers, which are fully connected. The output of MLP is a function of data point $X_i$ with $n$ dimensions and weights $W$:
+
+\( \hat{Y}_i = f(X_i, W) \)
+
 
 ```mermaid
 graph LR;
     subgraph Input Layer
-        X1[X1]
-        X2[X2]
-        Xn[Xn]
+        X1[x1]
+        X2[x2]
+        Xn[xn]
     end
 
     subgraph Hidden Layer 1
@@ -124,5 +127,23 @@ graph LR;
     G1 --> O1
     G2 --> O2
 ```
-- #### Learning weights by gradient decent 
+- ### Learning weights by gradient decent 
 
+Given $N$ number of data points $X_i$, $N$ number of measurements $Y_i$, and a MLP, that is abstracted as \( f(X_i, W) \), the following loss function is defined:
+
+\[ \text{L} = \frac{1}{N}\sum_{i=1}^{n} (Y_i - \hat{Y}_i)^2 \]
+
+Where:
+- \( n \) is the number of data points with $m$ dimensions
+- \( Y_i \) is the observation for the \( i \)-th data point.
+- \( \hat{Y}_i \) is the prediction for the \( i \)-th data point, which can be assumed that is the output of a multi layer perceptron, \( \hat{Y}_i = f(X_i, W) \). 
+
+In the loss function $L$, the data points $X_i$ vary but the weights $W$ are constant. The weights should be tuned in a way that the predictions \( \hat{Y}_i\) are close enough to $Y_i$ so that $L$ goes to zero. The weights are iteratively tuned using gradient descent:
+
+\[ W_{k+1} = W_{k} - \alpha \nabla_{W} L(W_{k}) \]
+
+- \( W \) represents the parameters (weights) of the model.
+- \( \alpha \) is the learning rate, a positive scalar that controls the step size.
+- \( \nabla_{W} L(W) \) is the gradient of the function \( f \) with respect to \( W \) at \( W_k \) .
+
+The gradient $L$ with respect to weights $W$ is calculated using the back-propagation observation explained above. The number of data points could be too many and leads to too much sequential computation in the loss function $L$. Therefore the data points are split in batches to enable parallel tunning of weights.  
