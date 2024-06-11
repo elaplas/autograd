@@ -146,4 +146,4 @@ In the loss function $L$, the data points $X_i$ vary but the weights $W$ are con
 - \( \alpha \) is the learning rate, a positive scalar that controls the step size.
 - \( \nabla_{W} L(W) \) is the gradient of the function \( f \) with respect to \( W \) at \( W_k \) .
 
-The gradient $L$ with respect to weights $W$ is calculated using the back-propagation observation explained above. The number of data points could be too many and leads to too much sequential computation in the loss function $L$. Therefore the data points are split in batches to enable parallel tunning of weights.  
+The gradient of loss function $L$ with respect to weights $W$ is calculated using the back-propagation explained above. The number of data points could be too many leading to a very big loss function and consequently too much sequential computation at the time of gradient computation. Therefore the data points are split in batches so that they are independently substituted in loss function and the corresponding gradient is calculated separately. This makes loss function smaller and enables parallel tunning of weights.
