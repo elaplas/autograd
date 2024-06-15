@@ -69,9 +69,15 @@ graph LR;
         Pm[Pm]
     end
 
-    P1 --> O
-    P2 --> O
-    Pm --> O
+    subgraph output layer
+        O1[O1]
+        O2[O2]
+        Om[Om]
+    end
+
+    P1 --> O1
+    P2 --> O2
+    Pm --> Om
 ```
 
 A multi layer perceptron (MLP) consists of several layers, which are fully connected. The output of MLP is a function of data point $X_i$ with $n$ dimensions and weights $W$:
@@ -88,14 +94,14 @@ graph LR;
     end
 
     subgraph Hidden Layer 1
-        H1[H1]
-        H2[H2]
-        Hn[Hn]
+        H1[P1]
+        H2[P2]
+        Hn[Pm]
     end
 
     subgraph Hidden Layer 2
-        G1[H1]
-        G2[H2]
+        G1[P1]
+        G2[P2]
     end
 
     subgraph Output Layer

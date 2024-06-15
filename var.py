@@ -47,7 +47,7 @@ class Var:
         return res
     
     def __pow__(self, n):
-        res = Var(self.data*self.data, "res")
+        res = Var(self.data**n, "res")
         def grad():
             self.grad = n*((self.data)**(n-1))*res.grad
         res._grad_func = grad
@@ -60,6 +60,7 @@ class Var:
         res = Var(t, "res")
         def grad():
             self.grad = (1 - (res.data**2))*res.grad
+            d = 1
         res._grad_func = grad
         res._children.add(self)
         return res
