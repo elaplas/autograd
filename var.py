@@ -5,17 +5,22 @@ class Var:
     def __init__(self, val, name=""):
         self.data = val
         self.name = name
-        self.grad = 1.0
+        self.grad = 0.0
         self._grad_func = None
         self._children = set()
+    
+    def __repr__(self):
+        return "{:.2f}".format(self.data)
         
     def __add__(self, other):
         if type(other) != Var:
             other = Var(other)
         res = Var(self.data + other.data, "res")
         def grad():
-            self.grad = res.grad
-            other.grad = res.grad
+            # The gradients are accumulated because there could be contributions from
+            # many outputs
+            self.grad += res.grad
+            other.grad += res.grad
         res._grad_func = grad
         res._children.add(self)
         res._children.add(other)
@@ -26,8 +31,10 @@ class Var:
             other = Var(other)
         res = Var(self.data - other.data, "res")
         def grad():
-            self.grad = res.grad
-            other.grad = -1*res.grad
+            # The gradients are accumulated because there could be contributions from
+            # many outputs
+            self.grad += res.grad
+            other.grad += -1*res.grad
         res._grad_func = grad
         res._children.add(self)
         res._children.add(other)
@@ -39,8 +46,10 @@ class Var:
             other = Var(other)
         res = Var(self.data * other.data, "res")
         def grad():
-            self.grad = other.data * res.grad
-            other.grad = self.data * res.grad
+            # The gradients are accumulated because there could be contributions from
+            # many outputs
+            self.grad += other.data * res.grad
+            other.grad += self.data * res.grad
         res._grad_func = grad
         res._children.add(self)
         res._children.add(other)
@@ -49,7 +58,9 @@ class Var:
     def __pow__(self, n):
         res = Var(self.data**n, "res")
         def grad():
-            self.grad = n*((self.data)**(n-1))*res.grad
+            # Gradient of "self" is assumed to be "1" because this "pow" is topmost function
+            # in the loss
+            self.grad += n*((self.data)**(n-1))*1
         res._grad_func = grad
         res._children.add(self)
         return res   
@@ -59,8 +70,9 @@ class Var:
         t = (math.exp(2*x)-1)/(math.exp(2*x)+1)
         res = Var(t, "res")
         def grad():
-            self.grad = (1 - (res.data**2))*res.grad
-            d = 1
+            # The gradient is accumulated because there could be contributions from
+            # many outputs
+            self.grad += (1 - (res.data**2))*res.grad
         res._grad_func = grad
         res._children.add(self)
         return res
@@ -75,7 +87,8 @@ class Var:
         if self._grad_func is None:
             print("the variable is not derivable")
             return None
-    
+
+        self.grad = 1
         nodes = [self]
         visited = set()
         visited.add(self)

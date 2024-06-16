@@ -48,7 +48,7 @@ L(+) -->R[dz/dz=1]
 
 - ### Multi layer perceptron (MLP)
 
-A perceptron is a mathematical expression that squashes the weighted sum of inputs to the range [-1, 1], which has $n$ inputs but only one output.
+A perceptron is a mathematical expression that squashes the weighted sum of inputs $X$ to the range [-1, 1], which has $n$ inputs but only one output.
 
 ```mermaid
 graph LR
@@ -63,6 +63,11 @@ A hidden layer consists of $m$ perceptron each of which has a $n$ inputs. As a r
 
 ```mermaid
 graph LR;
+
+    subgraph Input Layer
+        X1[X]
+    end
+
     subgraph hidden layer
         P1[P1]
         P2[P2]
@@ -70,10 +75,14 @@ graph LR;
     end
 
     subgraph output layer
-        O1[O1]
-        O2[O2]
-        Om[Om]
+        O1[o1]
+        O2[o2]
+        Om[om]
     end
+
+    X1 --> P1
+    X1 --> P2
+    X1 --> Pm
 
     P1 --> O1
     P2 --> O2
@@ -88,9 +97,7 @@ A multi layer perceptron (MLP) consists of several layers, which are fully conne
 ```mermaid
 graph LR;
     subgraph Input Layer
-        X1[x1]
-        X2[x2]
-        Xn[xn]
+        X1[Xi]
     end
 
     subgraph Hidden Layer 1
@@ -105,21 +112,13 @@ graph LR;
     end
 
     subgraph Output Layer
-        O1[O1]
-        O2[O2]
+        O1[o1]
+        O2[o2]
     end
 
     X1 --> H1
     X1 --> H2
     X1 --> Hn
-
-    X2 --> H1
-    X2 --> H2
-    X2 --> Hn
-
-    Xn --> H1
-    Xn --> H2
-    Xn --> Hn
 
     H1 --> G1
     H1 --> G2
