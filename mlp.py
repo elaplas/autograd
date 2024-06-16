@@ -3,6 +3,8 @@ import random
 class Perceptron:
     def __init__(self, ninputs:int):
         self.size = ninputs
+        # Initializing weights to random values is crucial. Randomness can help
+        # tune them faster and avoid unwanted bias
         self.weights = [Var(random.uniform(-1, 1), f"w {i}" ) for i in range(self.size)]
         self.bias = Var(random.uniform(-1, 1), "b")
     
