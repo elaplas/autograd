@@ -20,29 +20,29 @@ $dz/dx_1 = dz/dy *  dy/dx_1 = w_2 w_1$
 The flowchart below illustrates the relations (1):
 ```mermaid
 graph LR
-A[w1] -->D(*) 
-B[x1] -->D(*)
-D(*) -->E(+)
-C[b1] --> E(+)
-E(+) --> |y| G(*)
-M[w2] -->G(*)
-N[b2] -->L(+)
-G(*) -->L(+)
-L(+) -->R[z]
+A[w1] -->D('*') 
+B[x1] -->D('*')
+D('*') -->E('+')
+C[b1] --> E('+')
+E('+') --> |y| G('*')
+M[w2] -->G('*')
+N[b2] -->L('+')
+G('*') -->L('+')
+L('+') -->R[z]
 ```
-There is a very helpful observation that the addition forwards the same derivative, and that the multiplication forwards the multiplication of the derivative with the other branch. This simplifies the implementation of back-propagation.
+There is a very helpful observation that the addition node forwards the previous derivative to its child nodes, and that the multiplication node forwards the multiplication of the previous derivative with the value of the other child. This simplifies the implementation of back-propagation.
 
 ```mermaid
 graph LR
-A[dz/dw1 = w1*x1] -->D(*) 
-B[dz/dx1 = w1*w2] -->D(*)
-D(*) --> E(+)
-C[dz/db1 = w2] --> E(+)
-E(+) --> |dz/dy = w2| G(*)
-M[dz/dw2 = y] -->G(*)
-N[dz/db2=1] -->L(+)
-G(*) --> L(+)
-L(+) -->R[dz/dz=1]
+A[dz/dw1 = x1*w2] -->D('*') 
+B[dz/dx1 = w1*w2] -->D('*')
+D('*') --> |W2| E('+')
+C[dz/db1 = w2] --> |W2| E('+')
+E('+') --> |dz/dy = w2*1| G('*')
+M[dz/dw2 = y * 1] -->G('*')
+N[dz/db2=1]--> |1| L('+')
+G('*') --> |1| L('+')
+L('+') -->R[dz/dz=1]
 ```
 
 
@@ -52,10 +52,10 @@ A perceptron is a mathematical expression that squashes the weighted sum of inpu
 
 ```mermaid
 graph LR
-A[w1*x1] -->D(+) 
-B[w2*x2] -->D(+)
-M[wn*xn] -->D(+)
-D(+) --> E(tanh)
+A[w1*x1] -->D('+') 
+B[w2*x2] -->D('+')
+M[wn*xn] -->D('+')
+D('+') --> E(tanh)
 E(tanh) -->G[y]
 ```
 A hidden layer consists of $m$ perceptron each of which has a $n$ inputs. As a result a neural hidden layer has $n*m$ dimensions:
