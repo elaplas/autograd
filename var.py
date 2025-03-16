@@ -18,7 +18,11 @@ class Var:
         res = Var(self.data + other.data, "res")
         def grad():
             # The gradients are accumulated because there could be contributions from
-            # many outputs
+            # many outputs if the same variable is used in different addition operations
+            # e.g. build computation graph with multiple paths for following operations
+            # y = x + a       # Path 1: x is used here
+            # z = x + b       # Path 2: x is used again here
+            # result = y + z  # Final output
             self.grad += res.grad
             other.grad += res.grad
         res._grad_func = grad
@@ -26,13 +30,15 @@ class Var:
         res._children.add(other)
         return res
     
+    ## This function handles the cases like w*x - 4, which is w*x + (-1) * 4 where 4 is b. The derivate w.r.t b is -1.  
+    ## This is different than the cases like w*x + (-4) where -4 is b. The derivate w.r.t b is 1. (This can is handled by __add__())
     def __sub__(self, other):
         if type(other) != Var:
             other = Var(other)
         res = Var(self.data - other.data, "res")
         def grad():
             # The gradients are accumulated because there could be contributions from
-            # many outputs
+            # many outputs if the same variable is used in different addition operations
             self.grad += res.grad
             other.grad += -1*res.grad
         res._grad_func = grad
@@ -47,7 +53,7 @@ class Var:
         res = Var(self.data * other.data, "res")
         def grad():
             # The gradients are accumulated because there could be contributions from
-            # many outputs
+            # many outputs if the same variable is used in different addition operations
             self.grad += other.data * res.grad
             other.grad += self.data * res.grad
         res._grad_func = grad
@@ -59,7 +65,7 @@ class Var:
         res = Var(self.data**n, "res")
         def grad():
             # Gradient of "self" is assumed to be "1" because this "pow" is topmost function
-            # in the loss
+            # in the loss if the same variable is used in different addition operations
             self.grad += n*((self.data)**(n-1))*1
         res._grad_func = grad
         res._children.add(self)
@@ -71,7 +77,7 @@ class Var:
         res = Var(t, "res")
         def grad():
             # The gradient is accumulated because there could be contributions from
-            # many outputs
+            # many outputs if the same variable is used in different addition operations
             self.grad += (1 - (res.data**2))*res.grad
         res._grad_func = grad
         res._children.add(self)
@@ -81,7 +87,7 @@ class Var:
         return self*other
     
     def __radd__(self, other):
-        return self*other
+        return self+other
     
     def backward(self):
         if self._grad_func is None:
