@@ -6,16 +6,30 @@ It is a small Python implementation of back-propagation in a fully connected neu
 The gradient of loss function with respect to the weights of last layers are calculated and back propagated through the intermediate and first layers using chain rule. Given the following simple relations (1):
 
 $y=w_1x_1+b_1$
-$z=w_2y+b_2$
+$g=sig(y)$
+$z=w_2g+b_2$
 
 The derivatives $dz/dw_2$ , $dz/db_2$, $dz/dw_1$, and $dz/db_1$ are calculated as following:
 
-$dz/dw_2 = y$
-$dz/db_2 = 1$
-$dz/dy = w_2$
-$dz/dw_1 = dz/dy *  dy/dw_1 = w_2x_1$ 
-$dz/db_1 = dz/dy *  dy/db_1 = w_2$
-$dz/dx_1 = dz/dy *  dy/dx_1 = w_2 w_1$ 
+\[
+\frac{dz}{dw_2} = \text{sig}(y)
+\]
+\[
+\frac{dz}{db_2} = 1
+\]
+\[
+\frac{dz}{dg} = w_2
+\]
+\[
+\frac{dz}{dy} = \frac{dz}{dg} \cdot \frac{dg}{dy} = w_2 \cdot \text{sig}(y) \cdot (1 - \text{sig}(y))
+\]
+\[
+\frac{dz}{dw_1} = \frac{dz}{dg} \cdot \frac{dg}{dy} \cdot \frac{dy}{dw_1} = w_2 \cdot \text{sig}(y) \cdot (1 - \text{sig}(y)) \cdot x_1
+\]
+\[
+\frac{dz}{db_1} = \frac{dz}{dg} \cdot \frac{dg}{dy} \cdot \frac{dy}{db_1} = w_2 \cdot \text{sig}(y) \cdot (1 - \text{sig}(y))
+\]
+
 
 The flowchart below illustrates the relations (1):
 ```mermaid
@@ -24,23 +38,25 @@ A[w1] -->D('*')
 B[x1] -->D('*')
 D('*') -->E('+')
 C[b1] --> E('+')
-E('+') --> |y| G('*')
+E('+') --> |y| S[sig]
+S[sig] --> |g| G('*')
 M[w2] -->G('*')
 N[b2] -->L('+')
 G('*') -->L('+')
 L('+') -->R[z]
 ```
-There is a very helpful observation that the addition node forwards the previous derivative to its child nodes, and that the multiplication node forwards the multiplication of the previous derivative with the value of the other child. This simplifies the implementation of back-propagation.
+There is a very helpful observation that the addition node passes the previous derivative to its child nodes, and that the multiplication node passes the result of the multiplication of the previous derivative with the value of the other child node. This simplifies the implementation of back-propagation.
 
 ```mermaid
 graph LR
-A[dz/dw1 = x1*w2] -->D('*') 
-B[dz/dx1 = w1*w2] -->D('*')
-D('*') --> |W2| E('+')
-C[dz/db1 = w2] --> |W2| E('+')
-E('+') --> |dz/dy = w2*1| G('*')
-M[dz/dw2 = y * 1] -->G('*')
-N[dz/db2=1]--> |1| L('+')
+A[w1] --> |x1.sig.1-sig.w_2| D('*') 
+B[x1] --> |w1.sig.1-sig.w_2| D('*')
+D('*') --> |sig . 1-sig . w_2| E('+')
+E('+') --> |sig . 1-sig . w_2 | S[sig . 1-sig]
+S[sig . 1-sig ] --> |w_2 . 1| J[g]
+J[g] --> | w_2 . 1| G('*')
+M[w_2] --> |g . 1| G('*')
+N[b2]--> |1| L('+')
 G('*') --> |1| L('+')
 L('+') -->R[dz/dz=1]
 ```
