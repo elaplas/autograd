@@ -11,24 +11,37 @@ $z=w_2g+b_2$
 
 The derivatives $dz/dw_2$ , $dz/db_2$, $dz/dw_1$, and $dz/db_1$ are calculated as following:
 
-\[
-\frac{dz}{dw_2} = \text{sig}(y)
-\]
-\[
+$$
+\frac{dz}{dw_2} = \sigma(y) 
+$$
+
+$$
 \frac{dz}{db_2} = 1
-\]
-\[
+$$
+
+$$
 \frac{dz}{dg} = w_2
-\]
-\[
-\frac{dz}{dy} = \frac{dz}{dg} \cdot \frac{dg}{dy} = w_2 \cdot \text{sig}(y) \cdot (1 - \text{sig}(y))
-\]
-\[
-\frac{dz}{dw_1} = \frac{dz}{dg} \cdot \frac{dg}{dy} \cdot \frac{dy}{dw_1} = w_2 \cdot \text{sig}(y) \cdot (1 - \text{sig}(y)) \cdot x_1
-\]
-\[
-\frac{dz}{db_1} = \frac{dz}{dg} \cdot \frac{dg}{dy} \cdot \frac{dy}{db_1} = w_2 \cdot \text{sig}(y) \cdot (1 - \text{sig}(y))
-\]
+$$
+
+$$
+\frac{dz}{dy} = \frac{dz}{dg} \cdot \frac{dg}{dy} = w_2 \cdot \sigma(y) \cdot (1 - \sigma(y))
+$$
+
+$$
+\frac{dz}{dw_1} = \frac{dz}{dg} \cdot \frac{dg}{dy} \cdot \frac{dy}{dw_1} = w_2 \cdot \sigma(y) \cdot (1 - \sigma(y)) \cdot x_1
+$$
+
+$$
+\frac{dz}{db_1} = \frac{dz}{dg} \cdot \frac{dg}{dy} \cdot \frac{dy}{db_1} = w_2 \cdot \sigma(y) \cdot (1 - \sigma(y))
+$$
+
+### Notation Guide
+- $\sigma(y)$: Sigmoid activation function
+- $w_n$: Weight parameter
+- $b_n$: Bias parameter
+- $x_n$: Input feature
+- $y$: Intermediate layer outpu
+- $g$: Intermediate layer outpu
 
 
 The flowchart below illustrates the relations (1):
@@ -45,7 +58,13 @@ N[b2] -->L('+')
 G('*') -->L('+')
 L('+') -->R[z]
 ```
-There is a very helpful observation that the addition node passes the previous derivative to its child nodes, and that the multiplication node passes the result of the multiplication of the previous derivative with the value of the other child node. This simplifies the implementation of back-propagation.
+In backpropagation, two key observations make the process easier to understand and implement:
+
+1. **Addition Nodes**: When calculating derivatives, an addition node simply passes the derivative it receives from its parent node directly to both its child nodes.
+
+2. **Multiplication Nodes**: For multiplication nodes, the derivative passed to each child node is the product of the derivative received from the parent node and the value of the other child node.
+
+These simple rules significantly simplify how backpropagation is implemented in neural networks:
 
 ```mermaid
 graph LR
