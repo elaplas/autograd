@@ -1,6 +1,6 @@
 # autograd
 
-It is a small Python implementation of back-propagation in a fully connected neural network. The implementation of `autograd` is based on the following observations and illustrations:
+It is a small Python implementation of a binary classifier. for which multiple layer perceptron, back-propagation and optimization are implemented from scratch. The implementation of `autograd` is broken down to the following sections:
 
 - ### Calculation of gradient automatically by using back propagation
 The gradient of loss function with respect to the weights of last layers are calculated and back propagated through the intermediate and first layers using chain rule. Given the following simple relations (1), which a very simple neural network:
