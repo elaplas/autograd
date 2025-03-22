@@ -131,8 +131,7 @@ graph LR;
     P2 --> O2
     Pm --> Om
 ```
-
-A multi layer perceptron (MLP) consists of several layers, which are fully connected. The output of MLP is a function of data point $X_i$ with $n$ dimensions and weights $W$:
+A multi layer perceptron (MLP) is composed of multiple hidden layers. Each hidden layer consists of $m$ perceptrons, where each perceptron receives $n$ inputs and produces one output. Consequently the dimension of hidden layer is $n$x$m$. In a more detailed manner, the outputs of the first hidden layer become the inputs to every perceptron of the second hidden layer. This continues, where the outputs of one layer serve as the inputs of the next layer, establishing a fully connected structure. The output of MLP is a function of data point $X_i$ with $n$ dimensions and weights $W$:
 
 $$
 \hat{Y}_i = f(X_i, W)
